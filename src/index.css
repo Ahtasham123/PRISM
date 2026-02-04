@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* PRISM Custom Properties */
+    --void-black: #050508;
+    --nebula-purple: #6366f1;
+    --cyber-cyan: #06b6d4;
+    --plasma-pink: #ec4899;
+    --starlight-white: #f8fafc;
+    --deep-purple: #4f46e5;
+    --electric-blue: #0ea5e9;
+    --hot-pink: #db2777;
+    --slate-800: #1e293b;
+    --slate-700: #334155;
+    --slate-400: #94a3b8;
+    --slate-300: #cbd5e1;
+    
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, #6366f1 0%, #06b6d4 50%, #ec4899 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+    --gradient-cyan-purple: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+    --gradient-pink-cyan: linear-gradient(135deg, #ec4899 0%, #06b6d4 100%);
+    
+    /* Effects */
+    --glow-cyan: 0 0 40px rgba(6, 182, 212, 0.4);
+    --glow-purple: 0 0 60px rgba(99, 102, 241, 0.3);
+    --glow-pink: 0 0 40px rgba(236, 72, 153, 0.4);
+    
+    /* Easing */
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-dramatic: cubic-bezier(0.87, 0, 0.13, 1);
+    --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* shadcn overrides for dark theme */
+    --background: 240 20% 2%;
+    --foreground: 210 40% 98%;
+    --card: 240 15% 4%;
+    --card-foreground: 210 40% 98%;
+    --popover: 240 15% 4%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 10% 12%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 240 10% 12%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 187 94% 43%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 10% 15%;
+    --input: 240 10% 15%;
+    --ring: 239 84% 67%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-void-black text-starlight-white font-body antialiased;
+    background-color: #050508;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+  
+  code, pre {
+    @apply font-mono;
+  }
+}
+
+@layer components {
+  /* Glassmorphism Card */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  
+  /* Neon Button */
+  .btn-neon {
+    background: var(--gradient-hero);
+    border: none;
+    border-radius: 12px;
+    padding: 16px 32px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: white;
+    box-shadow: var(--glow-purple);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .btn-neon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+  }
+  
+  .btn-neon:hover::before {
+    left: 100%;
+  }
+  
+  .btn-neon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 60px rgba(99, 102, 241, 0.5);
+  }
+  
+  /* Secondary Button */
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 16px 32px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  
+  /* Input Field */
+  .input-field {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: white;
+    transition: all 0.3s ease;
+  }
+  
+  .input-field:focus {
+    outline: none;
+    border-color: var(--cyber-cyan);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+  }
+  
+  .input-field::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+  
+  /* Glow Effects */
+  .glow-cyan {
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.4);
+  }
+  
+  .glow-purple {
+    box-shadow: 0 0 60px rgba(99, 102, 241, 0.3);
+  }
+  
+  .glow-pink {
+    box-shadow: 0 0 40px rgba(236, 72, 153, 0.4);
+  }
+  
+  /* Text Gradient */
+  .text-gradient {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* 3D Card Tilt */
+  .card-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Section Padding */
+  .section-padding {
+    @apply py-24 md:py-32 px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Container */
+  .container-prism {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  /* Animation Delays */
+  .animation-delay-100 { animation-delay: 100ms; }
+  .animation-delay-200 { animation-delay: 200ms; }
+  .animation-delay-300 { animation-delay: 300ms; }
+  .animation-delay-400 { animation-delay: 400ms; }
+  .animation-delay-500 { animation-delay: 500ms; }
+  
+  /* Custom Scrollbar */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
