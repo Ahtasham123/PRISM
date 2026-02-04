@@ -18,8 +18,11 @@ export default function SearchInterface({ onSearch }: SearchInterfaceProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = () => {
+    console.log('SearchInterface: handleSearch called with query:', searchQuery);
     if (searchQuery.trim()) {
       onSearch(searchQuery);
+    } else {
+      console.warn('SearchInterface: Query is empty');
     }
   };
 
@@ -92,8 +95,8 @@ export default function SearchInterface({ onSearch }: SearchInterfaceProps) {
               key={m}
               onClick={() => setMode(m)}
               className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 ${mode === m
-                  ? 'bg-nebula-purple/20 text-white border border-nebula-purple/30'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                ? 'bg-nebula-purple/20 text-white border border-nebula-purple/30'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
             >
               {m === 'text' && <Search className="w-4 h-4" />}
@@ -149,8 +152,8 @@ export default function SearchInterface({ onSearch }: SearchInterfaceProps) {
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}
                     className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ${isDragging
-                        ? 'border-cyber-cyan bg-cyber-cyan/10'
-                        : 'border-white/20 hover:border-white/40 hover:bg-white/5'
+                      ? 'border-cyber-cyan bg-cyber-cyan/10'
+                      : 'border-white/20 hover:border-white/40 hover:bg-white/5'
                       }`}
                   >
                     <input
@@ -211,8 +214,8 @@ export default function SearchInterface({ onSearch }: SearchInterfaceProps) {
                 <button
                   onClick={toggleVoice}
                   className={`relative w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center transition-all duration-300 ${isListening
-                      ? 'bg-plasma-pink/20 shadow-glow-pink'
-                      : 'bg-white/5 hover:bg-white/10'
+                    ? 'bg-plasma-pink/20 shadow-glow-pink'
+                    : 'bg-white/5 hover:bg-white/10'
                     }`}
                 >
                   <Mic className={`w-8 h-8 ${isListening ? 'text-plasma-pink' : 'text-slate-400'}`} />
