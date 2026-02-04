@@ -2,19 +2,21 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Truck, Shield, Star, Bell } from 'lucide-react';
 
+export interface Product {
+  id: number;
+  name: string;
+  image: string;
+  price: number;
+  originalPrice: number;
+  seller: string;
+  rating: number;
+  reviews: string;
+  delivery: string;
+  savings: number;
+}
+
 interface ProductCardProps {
-  product: {
-    id: number;
-    name: string;
-    image: string;
-    price: number;
-    originalPrice: number;
-    seller: string;
-    rating: number;
-    reviews: string;
-    delivery: string;
-    savings: number;
-  };
+  product: Product;
   index: number;
 }
 
@@ -26,14 +28,14 @@ export default function ProductCard({ product, index }: ProductCardProps) {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
-    
+
     const rect = cardRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-    
+
     const rotateX = ((e.clientY - centerY) / (rect.height / 2)) * -8;
     const rotateY = ((e.clientX - centerX) / (rect.width / 2)) * 8;
-    
+
     setTransform({ rotateX, rotateY });
   };
 
@@ -49,8 +51,8 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       initial={{ opacity: 0, y: 40, rotateX: -10 }}
       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ 
-        duration: 0.6, 
+      transition={{
+        duration: 0.6,
         delay: index * 0.1,
         ease: [0.4, 0, 0.2, 1]
       }}
@@ -69,7 +71,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        
+
         {/* Quick Actions */}
         <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
@@ -77,11 +79,10 @@ export default function ProductCard({ product, index }: ProductCardProps) {
               e.stopPropagation();
               setIsSaved(!isSaved);
             }}
-            className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${
-              isSaved 
-                ? 'bg-plasma-pink text-white' 
+            className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${isSaved
+                ? 'bg-plasma-pink text-white'
                 : 'bg-void-black/60 text-white hover:bg-void-black/80'
-            }`}
+              }`}
           >
             <Heart className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
           </button>
@@ -90,11 +91,10 @@ export default function ProductCard({ product, index }: ProductCardProps) {
               e.stopPropagation();
               setIsTracking(!isTracking);
             }}
-            className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${
-              isTracking 
-                ? 'bg-cyber-cyan text-void-black' 
+            className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${isTracking
+                ? 'bg-cyber-cyan text-void-black'
                 : 'bg-void-black/60 text-white hover:bg-void-black/80'
-            }`}
+              }`}
           >
             <Bell className={`w-4 h-4 ${isTracking ? 'fill-current' : ''}`} />
           </button>
@@ -136,7 +136,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             <span className="text-cyber-cyan">-${product.savings}</span>
           </div>
           <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-nebula-purple to-cyber-cyan rounded-full"
               style={{ width: `${100 - savingsPercent}%` }}
             />

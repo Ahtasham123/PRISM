@@ -9,7 +9,11 @@ const trustBadges = [
   { icon: Eye, text: 'AI Visual Recognition' },
 ];
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onSearch: (query: string) => void;
+}
+
+export default function HeroSection({ onSearch }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Particle Background */}
@@ -50,12 +54,12 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.6, ease: [0.4, 0, 0.2, 1] }}
             className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto mb-12 leading-relaxed"
           >
-            <span className="text-white font-medium">AI-powered price comparison</span> that sees what you see. 
+            <span className="text-white font-medium">AI-powered price comparison</span> that sees what you see.
             Upload a photo, type a product, or speak—Prism scans the entire internet in real-time to find your perfect price.
           </motion.p>
 
           {/* Search Interface */}
-          <SearchInterface />
+          <SearchInterface onSearch={onSearch} />
 
           {/* Trust Badges */}
           <motion.div

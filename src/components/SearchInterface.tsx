@@ -4,7 +4,11 @@ import { Search, Camera, Mic, Upload, X } from 'lucide-react';
 
 type SearchMode = 'text' | 'image' | 'voice';
 
-export default function SearchInterface() {
+interface SearchInterfaceProps {
+  onSearch: (query: string) => void;
+}
+
+export default function SearchInterface({ onSearch }: SearchInterfaceProps) {
   const [mode, setMode] = useState<SearchMode>('text');
   const [searchQuery, setSearchQuery] = useState('');
   const [isDragging, setIsDragging] = useState(false);
@@ -13,6 +17,18 @@ export default function SearchInterface() {
   const [isListening, setIsListening] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      onSearch(searchQuery);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+  // ... Existing handlers ...
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -25,7 +41,7 @@ export default function SearchInterface() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       handleImageUpload(files[0]);
@@ -75,11 +91,10 @@ export default function SearchInterface() {
             <button
               key={m}
               onClick={() => setMode(m)}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 ${
-                mode === m
+              className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg text-sm font-medium transition-all duration-300 ${mode === m
                   ? 'bg-nebula-purple/20 text-white border border-nebula-purple/30'
                   : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
+                }`}
             >
               {m === 'text' && <Search className="w-4 h-4" />}
               {m === 'image' && <Camera className="w-4 h-4" />}
@@ -107,9 +122,13 @@ export default function SearchInterface() {
                   placeholder="Search for any product..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
                   className="input-field w-full pl-12 pr-4 py-4 text-lg"
                 />
-                <button className="absolute right-2 top-1/2 -translate-y-1/2 btn-neon py-2 px-6 text-sm">
+                <button
+                  onClick={handleSearch}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 btn-neon py-2 px-6 text-sm"
+                >
                   Find My Deal
                 </button>
               </motion.div>
@@ -129,11 +148,10 @@ export default function SearchInterface() {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}
-                    className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ${
-                      isDragging
+                    className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ${isDragging
                         ? 'border-cyber-cyan bg-cyber-cyan/10'
                         : 'border-white/20 hover:border-white/40 hover:bg-white/5'
-                    }`}
+                      }`}
                   >
                     <input
                       ref={fileInputRef}
@@ -192,11 +210,10 @@ export default function SearchInterface() {
               >
                 <button
                   onClick={toggleVoice}
-                  className={`relative w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    isListening
+                  className={`relative w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center transition-all duration-300 ${isListening
                       ? 'bg-plasma-pink/20 shadow-glow-pink'
                       : 'bg-white/5 hover:bg-white/10'
-                  }`}
+                    }`}
                 >
                   <Mic className={`w-8 h-8 ${isListening ? 'text-plasma-pink' : 'text-slate-400'}`} />
                   {isListening && (
@@ -212,7 +229,7 @@ export default function SearchInterface() {
                 <p className="text-slate-400 text-sm">
                   {isListening ? 'Say something like "Find Sony headphones"' : 'Try voice search'}
                 </p>
-                
+
                 {/* Waveform */}
                 {isListening && (
                   <div className="flex items-center justify-center gap-1 mt-6 h-12">

@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, Dispatch, SetStateAction } from 'react';
 import { motion } from 'framer-motion';
-import { SlidersHorizontal, Grid3X3, List, ChevronDown } from 'lucide-react';
-import ProductCard from '../components/ProductCard';
+import { SlidersHorizontal, Grid3X3, List, ChevronDown, Loader2 } from 'lucide-react';
+import ProductCard, { Product } from '../components/ProductCard';
 
-const products = [
+const defaultProducts: Product[] = [
   {
     id: 1,
     name: 'Sony WH-1000XM5 Wireless Noise-Canceling Headphones',
@@ -44,10 +44,28 @@ const products = [
 
 const sortOptions = ['Price: Low to High', 'Price: High to Low', 'Best Rating', 'Most Reviewed', 'Fastest Delivery'];
 
-export default function DashboardSection() {
+interface DashboardSectionProps {
+  products?: Product[];
+  isSearching: boolean;
+}
+
+export default function DashboardSection({ products, isSearching }: DashboardSectionProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortOpen, setSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+
+  const displayProducts = products || defaultProducts;
+
+  if (isSearching) {
+    return (
+      <section className="relative section-padding bg-gradient-to-b from-void-black via-deep-purple/5 to-void-black min-h-[600px] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-cyber-cyan animate-spin" />
+          <p className="text-slate-400 text-lg">Scanning the universe for deals...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative section-padding bg-gradient-to-b from-void-black via-deep-purple/5 to-void-black">
@@ -65,7 +83,7 @@ export default function DashboardSection() {
             <span className="text-sm text-cyber-cyan">Live Price Comparison</span>
           </div>
           <h2 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl mb-4">
-            Scanning <span className="text-gradient">847 retailers</span>...
+            {products ? 'Found Deals' : 'Scanning'} <span className="text-gradient">847 retailers</span>...
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
             Real-time price updates from across the web. Find the best deals instantly.
@@ -87,7 +105,7 @@ export default function DashboardSection() {
                 <SlidersHorizontal className="w-4 h-4" />
                 <span>Filters</span>
               </button>
-              
+
               {/* Sort Dropdown */}
               <div className="relative">
                 <button
@@ -97,7 +115,7 @@ export default function DashboardSection() {
                   <span>Sort: {selectedSort}</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${sortOpen ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 {sortOpen && (
                   <div className="absolute top-full left-0 mt-2 w-56 glass-card py-2 z-50">
                     {sortOptions.map((option) => (
@@ -107,9 +125,8 @@ export default function DashboardSection() {
                           setSelectedSort(option);
                           setSortOpen(false);
                         }}
-                        className={`w-full px-4 py-2 text-left text-sm hover:bg-white/5 transition-colors ${
-                          selectedSort === option ? 'text-cyber-cyan' : 'text-slate-300'
-                        }`}
+                        className={`w-full px-4 py-2 text-left text-sm hover:bg-white/5 transition-colors ${selectedSort === option ? 'text-cyber-cyan' : 'text-slate-300'
+                          }`}
                       >
                         {option}
                       </button>
@@ -123,21 +140,19 @@ export default function DashboardSection() {
             <div className="flex items-center gap-2 bg-white/5 rounded-lg p-1">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-md transition-all ${
-                  viewMode === 'grid' 
-                    ? 'bg-nebula-purple text-white' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
+                className={`p-2 rounded-md transition-all ${viewMode === 'grid'
+                  ? 'bg-nebula-purple text-white'
+                  : 'text-slate-400 hover:text-white'
+                  }`}
               >
                 <Grid3X3 className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-md transition-all ${
-                  viewMode === 'list' 
-                    ? 'bg-nebula-purple text-white' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
+                className={`p-2 rounded-md transition-all ${viewMode === 'list'
+                  ? 'bg-nebula-purple text-white'
+                  : 'text-slate-400 hover:text-white'
+                  }`}
               >
                 <List className="w-4 h-4" />
               </button>
@@ -146,12 +161,11 @@ export default function DashboardSection() {
         </motion.div>
 
         {/* Products Grid */}
-        <div className={`grid gap-6 ${
-          viewMode === 'grid' 
-            ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
-            : 'grid-cols-1'
-        }`}>
-          {products.map((product, index) => (
+        <div className={`grid gap-6 ${viewMode === 'grid'
+          ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+          : 'grid-cols-1'
+          }`}>
+          {displayProducts.map((product, index) => (
             <ProductCard key={product.id} product={product} index={index} />
           ))}
         </div>
