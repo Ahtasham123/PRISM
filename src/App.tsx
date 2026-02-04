@@ -14,6 +14,8 @@ function App() {
   const [searchResults, setSearchResults] = useState<Product[] | undefined>(undefined);
   const [isSearching, setIsSearching] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -25,15 +27,27 @@ function App() {
 
   const handleSearch = async (query: string) => {
     setIsSearching(true);
+    setError(null);
+    setSearchResults(undefined);
+
     // Scroll to dashboard
     const dashboard = document.getElementById('dashboard');
     if (dashboard) {
       dashboard.scrollIntoView({ behavior: 'smooth' });
     }
 
+    console.log('Starting search for:', query);
+
     try {
       const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      console.log('API Response status:', res.status);
+
+      if (!res.ok) {
+        throw new Error(`API Error: ${res.status}`);
+      }
+
       const data = await res.json();
+      console.log('API Data received:', data);
 
       if (data.shopping_results) {
         const mapped: Product[] = data.shopping_results.map((item: any, idx: number) => ({
@@ -48,17 +62,19 @@ function App() {
           rating: item.rating || 4.5,
           reviews: item.reviews ? `${item.reviews}` : '100+',
           delivery: item.delivery || 'Free delivery',
-          savings: 0 // Will calculate in component
+          savings: 0
         })).map((p: any) => ({
           ...p,
           savings: Math.round(p.originalPrice - p.price)
         }));
         setSearchResults(mapped);
       } else {
+        console.warn('No shopping_results in data');
         setSearchResults([]);
       }
     } catch (e) {
-      console.error(e);
+      console.error('Search failed:', e);
+      setError('Failed to fetch results. Please try again.');
       setSearchResults([]);
     } finally {
       setIsSearching(false);
@@ -71,7 +87,7 @@ function App() {
       <main>
         <HeroSection onSearch={handleSearch} />
         <div id="dashboard">
-          <DashboardSection products={searchResults} isSearching={isSearching} />
+          <DashboardSection products={searchResults} isSearching={isSearching} error={error} />
         </div>
         <USPSection />
         <SocialProofSection />

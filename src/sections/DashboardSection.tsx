@@ -47,9 +47,10 @@ const sortOptions = ['Price: Low to High', 'Price: High to Low', 'Best Rating', 
 interface DashboardSectionProps {
   products?: Product[];
   isSearching: boolean;
+  error: string | null;
 }
 
-export default function DashboardSection({ products, isSearching }: DashboardSectionProps) {
+export default function DashboardSection({ products, isSearching, error }: DashboardSectionProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortOpen, setSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
@@ -62,6 +63,20 @@ export default function DashboardSection({ products, isSearching }: DashboardSec
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-12 h-12 text-cyber-cyan animate-spin" />
           <p className="text-slate-400 text-lg">Scanning the universe for deals...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="relative section-padding bg-gradient-to-b from-void-black via-deep-purple/5 to-void-black min-h-[600px] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-2">
+            <span className="text-2xl">⚠️</span>
+          </div>
+          <h3 className="text-xl font-bold text-white">Search Failed</h3>
+          <p className="text-slate-400">{error}</p>
         </div>
       </section>
     );
