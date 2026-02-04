@@ -1,6 +1,6 @@
-import { useState, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { motion } from 'framer-motion';
-import { SlidersHorizontal, Grid3X3, List, ChevronDown, Loader2 } from 'lucide-react';
+import { SlidersHorizontal, Grid3X3, List, ChevronDown, Loader2, Search } from 'lucide-react';
 import ProductCard, { Product } from '../components/ProductCard';
 
 const defaultProducts: Product[] = [
@@ -55,14 +55,58 @@ export default function DashboardSection({ products, isSearching, error }: Dashb
   const [sortOpen, setSortOpen] = useState(false);
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
 
+  // Scanning Animation State
+  const [scanStep, setScanStep] = useState(0);
+  const scanMessages = [
+    "Connecting to global retailers...",
+    "Scanning Amazon database...",
+    "Checking Best Buy inventory...",
+    "Comparing authorized sellers...",
+    "Analyzing shipping costs...",
+    "Verifying discount codes...",
+    "Finalizing best deals..."
+  ];
+
+  useEffect(() => {
+    if (isSearching) {
+      const interval = setInterval(() => {
+        setScanStep((prev) => (prev + 1) % scanMessages.length);
+      }, 800);
+      return () => clearInterval(interval);
+    } else {
+      setScanStep(0);
+    }
+  }, [isSearching]);
+
   const displayProducts = products || defaultProducts;
+  const isDefaultView = !products;
+  const hasNoResults = products && products.length === 0;
 
   if (isSearching) {
     return (
       <section className="relative section-padding bg-gradient-to-b from-void-black via-deep-purple/5 to-void-black min-h-[600px] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-cyber-cyan animate-spin" />
-          <p className="text-slate-400 text-lg">Scanning the universe for deals...</p>
+        <div className="flex flex-col items-center gap-8 max-w-md w-full px-4">
+          <div className="relative">
+            <div className="w-24 h-24 rounded-full border-4 border-white/5 border-t-cyber-cyan animate-spin" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Loader2 className="w-10 h-10 text-cyber-cyan/50 animate-pulse" />
+            </div>
+          </div>
+
+          <div className="text-center space-y-2 w-full">
+            <h3 className="text-xl font-display font-bold text-white min-h-[1.75rem]">
+              {scanMessages[scanStep]}
+            </h3>
+            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: "0%" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+                className="h-full bg-gradient-to-r from-transparent via-cyber-cyan to-transparent shimmer-effect"
+              />
+            </div>
+            <p className="text-slate-500 text-sm">Processing 850+ sources</p>
+          </div>
         </div>
       </section>
     );
@@ -72,11 +116,36 @@ export default function DashboardSection({ products, isSearching, error }: Dashb
     return (
       <section className="relative section-padding bg-gradient-to-b from-void-black via-deep-purple/5 to-void-black min-h-[600px] flex items-center justify-center">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-2">
-            <span className="text-2xl">⚠️</span>
+          <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-2 border border-red-500/20">
+            <span className="text-3xl">⚠️</span>
           </div>
-          <h3 className="text-xl font-bold text-white">Search Failed</h3>
-          <p className="text-slate-400">{error}</p>
+          <h3 className="text-2xl font-bold text-white">Search Failed</h3>
+          <p className="text-slate-400 max-w-md">{error}</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (hasNoResults) {
+    return (
+      <section className="relative section-padding bg-gradient-to-b from-void-black via-deep-purple/5 to-void-black min-h-[600px] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-6 text-center max-w-lg mx-auto px-4">
+          <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-2">
+            <Search className="w-10 h-10 text-slate-500" />
+          </div>
+          <div>
+            <h3 className="text-2xl font-display font-bold text-white mb-2">No results found</h3>
+            <p className="text-slate-400">
+              We scoured the known universe but couldn't find any matches for your search.
+              Try adjusting your keywords or checking for typos.
+            </p>
+          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-secondary mt-4"
+          >
+            Clear Search
+          </button>
         </div>
       </section>
     );
@@ -98,7 +167,7 @@ export default function DashboardSection({ products, isSearching, error }: Dashb
             <span className="text-sm text-cyber-cyan">Live Price Comparison</span>
           </div>
           <h2 className="font-display font-bold text-3xl md:text-4xl lg:text-5xl mb-4">
-            {products ? 'Found Deals' : 'Scanning'} <span className="text-gradient">847 retailers</span>...
+            {products ? 'Found Deals' : 'Featured Drops'} <span className="text-gradient">847 retailers</span>
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
             Real-time price updates from across the web. Find the best deals instantly.

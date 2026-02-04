@@ -228,6 +228,28 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Shimmer Effect */
+  .shimmer-effect {
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 40%,
+      black 60%,
+      transparent 100%
+    );
+    mask-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+  }
+
+  @keyframes shimmer {
+    from {
+      mask-position: 200% 0;
+    }
+    to {
+      mask-position: -200% 0;
+    }
+  }
 }
 
 /* Reduced Motion */
